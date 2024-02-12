@@ -1,0 +1,53 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-duplo
+    ports:
+      - '6501:5432'
+    volumes:
+      - progresDB:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8811:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@duplo.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+  app:
+    depends_on:
+      - postgres
+    build: ./
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    environment:
+      - DB_HOST=postgresdb
+      - DB_USER=$POSTGRES_USER
+      - DB_PASSWORD=$POSTGRES_PASSWORD
+      - DB_NAME=$POSTGRES_DB
+      - DB_PORT=$POSTGRES_PORT
+    stdin_open: true
+    tty: true
+
+  # redis:
+  #   image: redis:alpine
+  #   container_name: redis
+  #   ports:
+  #     - '6379:6379'
+  #   volumes:
+  #     - redisDB:/data
+volumes:
+  progresDB:
+  redisDB:
+  pgadmin-data:
+
