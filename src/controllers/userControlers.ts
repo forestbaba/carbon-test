@@ -17,6 +17,12 @@ export class userControllers {
   static async create(req: Request, res: Response) {
     try {
       const userService = new UserCore(new UserAdapdter());
+
+      const emailExist = await userService.findByEmail(req.body.email)
+      
+      if(emailExist){
+        return res.status(400).json({error: true, message: "Email is already taken"})
+      }
       const user = await userService.create(req.body);
 
       res.status(201).json({
