@@ -40,6 +40,7 @@ export class orderController {
 
       const inventoryService = new InventoryCore(new InventoryAdapter());
       const orderRepository = new OrderCore(new OrderAdapter());
+      const orderItemRepository = new OrderItemCore(new OrderItemAdapter());
 
       payload.total_amount = 0;
 
@@ -52,6 +53,9 @@ export class orderController {
         if (!check) {
           return res.status(404).json({ error: true, message: 'order item not found' })
         }
+        if(check.quantity < item.quantity){
+          return res.status(404).json({ error: true, message: `quantity required for ${check.name} is more than quantity available ` })
+        }
       }
 
       for (let item of req.body.order_items) {
@@ -59,14 +63,15 @@ export class orderController {
         if (orderItem) {
           totalAmount += (orderItem.price * item.quantity);
 
-          const orderItemRepository = new OrderItemCore(new OrderItemAdapter());
-
           item.order = order.id
           item.department_id = req.body.department_id
           item.price = orderItem.price
 
           await orderItemRepository.create(item)
 
+          orderItem.quantity = orderItem.quantity - item.quantity;
+
+          inventoryService.update(item.item_id, orderItem)
         }
       }
 
@@ -74,12 +79,7 @@ export class orderController {
 
       await orderRepository.update(order.id, order);
 
-      const orderTransactions = new OrderTransaction({
-        businessID: req.body.business_id,
-        amount: totalAmount,
-        status: "success"
-      }).save()
-
+      await orderController.createdOrderTransaction(req.body.business_id, totalAmount)
 
       res.status(201).json({
         error: false,
@@ -90,6 +90,29 @@ export class orderController {
       console.log(error)
       res.status(500).json({ error: error });
     }
+  }
+
+  static async validateInventory(req: customRequest, res: Response){
+    const inventoryService = new InventoryCore(new InventoryAdapter());
+
+    for (let item of req.body.order_items) {
+      const check = await inventoryService.findById(item.item_id)
+      if (!check) {
+        return res.status(404).json({ error: true, message: 'order item not found' })
+      }
+      if(check.quantity < item.quantity){
+        return res.status(404).json({ error: true, message: `inventory with name ${check.name} is out of stock ` })
+      }
+    }
+
+  }
+
+  static async  createdOrderTransaction(business_id, totalAmount){
+    const orderTransactions = new OrderTransaction({
+      businessID: business_id,
+      amount: totalAmount,
+      status: "success"
+    }).save()
   }
 
   static async update(req: Request, res: Response) {
