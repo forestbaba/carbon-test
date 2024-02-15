@@ -2,13 +2,20 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 
-@Entity("duplo_admin")
-export class DuploAdmin {
+
+export enum Status {
+  PICKED_UP = 'picked_up',
+  IN_TRANSIT = 'in_transit',
+  WAREHOUSE = 'warehouse',
+  DELIVERED = 'delivered',
+}
+
+@Entity('items')
+export class Package {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -16,17 +23,15 @@ export class DuploAdmin {
   name: string;
 
   @Column()
-  email: string;
+  status: Status;
 
   @Column()
-  password: string;
-
-  @Column()
-  active: boolean;
+  created_by: number;
 
   @CreateDateColumn()
   created_at: Date;
 
   @UpdateDateColumn()
   updated_at: Date;
+
 }

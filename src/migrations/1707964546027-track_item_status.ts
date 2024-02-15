@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm"
 
-export class BusinessDepartments1707664205514 implements MigrationInterface {
+export class TrackItemStatus1707964546027 implements MigrationInterface {
 
-    tableName = 'business_departments';
+    tableName = 'item_status';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.createTable(
@@ -15,14 +15,14 @@ export class BusinessDepartments1707664205514 implements MigrationInterface {
               isPrimary: true,
             },
             {
-              name: 'name',
-              type: 'varchar',
-              length: '255',
-            },
-
-            {
-              name: 'created_by',
+              name: 'item_id',
               type: 'int',
+              isNullable: false,
+            },
+            {
+              name: 'status',
+              type: 'enum',
+              enum:['PICKED_UP', 'IN_TRANSIT', 'WAREHOUSE', 'DELIVERED'],
               isNullable: false,
             },
             {
@@ -34,26 +34,10 @@ export class BusinessDepartments1707664205514 implements MigrationInterface {
               name: 'updatedAt',
               type: 'timestamp',
               default: 'CURRENT_TIMESTAMP',
-            },
-            {
-              name: 'deletedAt',
-              type: 'timestamp',
-              isNullable: true,
-            },
+            }
           ],
         }),
         true,
-      );
-  
-      await queryRunner.createForeignKey(
-        this.tableName,
-        new TableForeignKey({
-          name: 'fk_admin_id',
-          columnNames: ['created_by'],
-          referencedColumnNames: ['id'],
-          referencedTableName: 'duplo_admin',
-          onDelete: 'CASCADE',
-        }),
       );
     }
   

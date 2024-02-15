@@ -9,7 +9,7 @@ import {
 export class UserAdapdter implements UserRepositoryInterface {
   async findAll() {
     const userRepository = AppDataSource.getRepository(User);
-    const users = await userRepository.find({ relations: ["inventory"] });
+    const users = await userRepository.find();
 
     return users;
   }

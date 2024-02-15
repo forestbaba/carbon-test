@@ -1,25 +1,53 @@
-import { MigrationInterface, QueryRunner } from "typeorm"
+import { MigrationInterface, QueryRunner, Table } from "typeorm"
 
-export class CreateUser1707583669132 implements MigrationInterface {
+export class Items1707583669132 implements MigrationInterface {
 
-  public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-        CREATE TABLE "users" (
-          "id" int,
-          "name" varchar(255) NOT NULL,
-          "email" varchar(255) UNIQUE NOT NULL,
-          "password" varchar(255) NOT NULL,
-          "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          CONSTRAINT "PK_users_id" PRIMARY KEY ("id")
-        );
-      `);
-  }
+    tableName = 'users';
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`
-        DROP TABLE "users";
-      `);
-  }
+    public async up(queryRunner: QueryRunner): Promise<void> {
+      await queryRunner.createTable(
+        new Table({
+          name: this.tableName,
+          columns: [
+            {
+              name: 'id',
+              type: 'serial',
+              isPrimary: true,
+            },
+            {
+              name: 'name',
+              type: 'varchar',
+              isNullable: false,
+            },
+            {
+              name: 'email',
+              type: 'varchar',
+              isNullable: false,
+            },
+            {
+              name: 'password',
+              type: 'varchar',
+              isNullable: false,
+            },
+            {
+              name: 'createdAt',
+              type: 'timestamp',
+              default: 'CURRENT_TIMESTAMP',
+            },
+            {
+              name: 'updatedAt',
+              type: 'timestamp',
+              default: 'CURRENT_TIMESTAMP',
+            }
+          ],
+        }),
+        true,
+      );
+
+    }
+  
+    public async down(queryRunner: QueryRunner): Promise<void> {
+      await queryRunner.dropTable(this.tableName, true);
+    }
 
 }

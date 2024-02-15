@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
-import { Inventory } from "./inventory.entity";
 
 @Entity("users")
 export class User {
@@ -21,8 +20,6 @@ export class User {
 
   @Column()
   password: string;
-  @OneToMany(() => Inventory, (inventory) => inventory.created_by)
-  inventory: Inventory[];
 
   @CreateDateColumn()
   created_at: Date;

@@ -7,7 +7,7 @@
     "watch": "tsc -w",
     "dev": "npx ts-node src/index.ts",
     "develop": "nodemon build/index.js",
-    "start": "node build/index.js",
+    "start": "npm run dev",
     "build": "tsc",
     "build:lib": "tsc",
     "migration:generate": "typeorm migration:create ./src/migrations/${npm_config_name:-DefaultMigrationName}",
@@ -18,7 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.4",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.3.0",
@@ -26,7 +26,7 @@
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^10.9.2",
-    "typeorm": "0.3.15",
+    "typeorm": "^0.3.20",
     "yup": "^1.3.3"
   },
   "devDependencies": {

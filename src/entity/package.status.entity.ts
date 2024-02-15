@@ -1,30 +1,27 @@
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Status } from "./package.entity";
 
-@Entity("business_departments")
-export class Department {
+@Entity('item_status')
+export class PackageStatus {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  item_id: number;
 
   @Column()
-  created_by: number;
+  status: Status;
 
   @CreateDateColumn()
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updated_at: Date;
 
-  @DeleteDateColumn()
-  deletedAt: Date;
 }

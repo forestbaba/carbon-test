@@ -1,8 +1,8 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from "typeorm"
 
-export class BusinessOrderItems1707682051825 implements MigrationInterface {
+export class BusinessOrders1707682046197 implements MigrationInterface {
 
-    tableName = 'business_order_items';
+    tableName = 'items';
 
     public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.createTable(
@@ -15,24 +15,18 @@ export class BusinessOrderItems1707682051825 implements MigrationInterface {
               isPrimary: true,
             },
             {
-              name: 'item_id',
-              type: 'int',
-            },
-            {
-                name: 'price',
-                type: 'float',
-            },
-            {
-                name: 'quantity',
-                type: 'int',
-            },
-            {
-              name: 'created_by',
-              type: 'int',
+              name: 'name',
+              type: 'varchar',
               isNullable: false,
             },
             {
-              name: 'order_id',
+              name: 'status',
+              type: 'enum',
+              enum:['PICKED_UP', 'IN_TRANSIT', 'WAREHOUSE', 'DELIVERED'],
+              isNullable: false,
+            },
+            {
+              name: 'created_by',
               type: 'int',
               isNullable: false,
             },
@@ -45,12 +39,7 @@ export class BusinessOrderItems1707682051825 implements MigrationInterface {
               name: 'updatedAt',
               type: 'timestamp',
               default: 'CURRENT_TIMESTAMP',
-            },
-            {
-              name: 'deletedAt',
-              type: 'timestamp',
-              isNullable: true,
-            },
+            }
           ],
         }),
         true,
@@ -66,17 +55,6 @@ export class BusinessOrderItems1707682051825 implements MigrationInterface {
           onDelete: 'CASCADE',
         }),
       );
-      await queryRunner.createForeignKey(
-        this.tableName,
-        new TableForeignKey({
-          name: 'fk_order_id',
-          columnNames: ['order_id'],
-          referencedColumnNames: ['id'],
-          referencedTableName: 'business_orders',
-          onDelete: 'CASCADE',
-        }),
-      );
-     
     }
   
     public async down(queryRunner: QueryRunner): Promise<void> {
